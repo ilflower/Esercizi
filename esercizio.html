@@ -1,0 +1,88 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Calcolo IP e Subnet Mask</title>
+</head>
+<body>
+    <h2>Calcolo Indirizzo IP</h2>
+    Indirizzo IP:
+    <input type="text" id="ip" placeholder="192.168.1.10">
+    <br><br>
+    Prefix Length:
+    <input type="text" id="pl" placeholder="24">
+    <br><br>
+    <button onclick="calcola()">Calcola</button>
+    <br><br>
+    IP in binario:
+    <input type="text" id="binario" size="40" readonly>
+    <br><br>
+    Subnet Mask:
+    <input type="text" id="mask" readonly>
+    <br><br>
+    Subnet Mask in binario:
+    <input type="text" id="maskBin" size="40" readonly>
+    <script>
+        function calcola() {
+            let ip = document.getElementById("ip").value;
+            let pl = Number(document.getElementById("pl").value);
+            let numeri = ip.split(".");
+            if (numeri.length != 4) {
+                alert("Indirizzo IP non valido!");
+                return;
+            }
+            if (document.getElementById("pl").value == "" ||
+                pl < 0 || pl > 32 || pl != Math.floor(pl)) {
+                alert("Inserisci un PL da 0 a 32!");
+                return;
+            }
+            let ipBin = "";
+            for (let i = 0; i < 4; i++) {
+                let numero = Number(numeri[i]);
+                if (numeri[i] == "" || numero < 0 ||
+                    numero > 255 || numero != Math.floor(numero)) {
+                    alert("Indirizzo IP non valido!");
+                    return;
+                }
+                let bin = numero.toString(2);
+                while (bin.length < 8) {
+                    bin = "0" + bin;
+                }
+                ipBin = ipBin + bin;
+                if (i < 3) {
+                    ipBin = ipBin + ".";
+                }
+            }
+            document.getElementById("binario").value = ipBin;
+            let maskBin = "";
+            let mask = "";
+            for (let i = 0; i < 32; i++) {
+                if (i < pl) {
+                    maskBin = maskBin + "1";
+                } else {
+                    maskBin = maskBin + "0";
+                }
+            }
+            for (let i = 0; i < 4; i++) {
+                let parte = maskBin.substring(i * 8, i * 8 + 8);
+                let numero = parseInt(parte, 2);
+                mask = mask + numero;
+                if (i < 3) {
+                    mask = mask + ".";
+                }
+            }
+            document.getElementById("mask").value = mask;
+            let maskBinPunti = "";
+            for (let i = 0; i < 4; i++) {
+                maskBinPunti = maskBinPunti +
+                    maskBin.substring(i * 8, i * 8 + 8);
+
+                if (i < 3) {
+                    maskBinPunti = maskBinPunti + ".";
+                }
+            }
+            document.getElementById("maskBin").value = maskBinPunti;
+        }
+    </script>
+</body>
+</html>
